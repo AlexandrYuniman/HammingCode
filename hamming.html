@@ -1,0 +1,83 @@
+Дано - строка, которую пользователь ввел (mes) из 4 символов 0 и 1, закодировать, декодированный должен быть как и изначальная строка 
+<html>	
+<head>
+	<title>hemmeing code</title>
+	<script>
+	function code ()
+	{
+		let message = document.getElementById('inputMessage').value;
+		message = message.split('');
+		for (let i = 0; i < message.length; i++)
+			message[i] *=1;
+		let control = new Array;
+		control[0] = ((message[0] + message [1] + message[3]) % 2)
+		control[1] = ((message[0] + message [2] + message[3]) % 2)
+		control[2] = ((message[1] + message [2] + message[3]) % 2)
+		let codedMessage = new Array;
+		let k = 0; 
+		let l =0;
+		for (let i = 1; i <= message.length + control.length; i++)
+		{
+			if (Number.isInteger(Math.log(i)/Math.log(2))) 
+			{
+				codedMessage.push(control[k]);
+				k++
+			}
+			else
+			{ 
+				codedMessage.push(message[l]);
+				l++;
+			}
+		}
+		
+		document.getElementById('codedMessage').value = codedMessage.join('');
+	}
+	
+	function decode(){		
+		let coded = document.getElementById('codedMessage').value;
+		let newCoded = new Array;
+		for (let i = 0; i < coded.length; i++)
+			newCoded[i+1] = coded[i];
+		let sumOfError = 0;
+		
+		for (let i = 1; i < newCoded.length; i++)
+		{
+			newCoded[i] *=1;
+			if (Number.isInteger(Math.log(i)/Math.log(2)))
+			{
+				k = i; 
+				let sum = 0;
+				for (let j = k+1; j < newCoded.length; j++)
+				{
+					if ((j % (2*k)) >= k)
+						sum += parseFloat(newCoded[j]);
+				}
+				newCoded[k]=sum%2;
+			}			
+		}
+		
+		for (let i = 0; i < coded.length; i++)
+			if (newCoded[i+1] != coded[i])
+				sumOfError += i+1;
+			
+		if (sumOfError !=0)
+			newCoded[sumOfError] = (newCoded[sumOfError]+1) % 2;
+		for (let i = 1; i < newCoded.length; i++)
+			if (Number.isInteger(Math.log(i)/Math.log(2)))
+				delete newCoded[i];	
+		
+		document.getElementById('decodedMessage').value = newCoded.join('');
+	}
+	
+	</script>
+</head>
+<body>
+	<h1>Hemming cod </h1>
+	<p> <input type='text' id='inputMessage'> Type the message </p>
+	<p> <input type='button' value='code' onClick='code()'> </p>
+	<p> <input type='text' id='codedMessage'> Coded message </p>
+	<p> <input type='button' value='decode' onClick='decode()'> </p>
+	<p> <input type='text' id='decodedMessage'> Decoded message </p>
+	<p> <span id = 'placeOfError'> </span> </p>
+</body>
+</html>
